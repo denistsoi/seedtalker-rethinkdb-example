@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<body>
+<div id="app">
+  <div v-if="state == 'login'">
+    <span v-if="error">Error {{ error }}</span>
+    <input placeholder="username" v-model="username">
+    <input type="password" placeholder="password" v-model="password">
+    <button @click="login">login</button>
+  </div>
+
+  <div v-if="state == 'chat'">
+    <ul>
+      <li v-for="message in messages | orderBy 'timestamp'">
+        <span>{{ message.username }}</span>
+        <span>{{ message.message }}</span> 
+        <span>{{ message.timestamp }}</span>
+      </li>
+      <li>
+        <input v-model="message" @keyup.enter="createMessage">
+      </li>
+    </ul>
+  </div>
+</div>
+
+<script src="client.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>
