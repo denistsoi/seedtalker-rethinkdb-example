@@ -6,9 +6,9 @@ Example Application with Seed-Talker/Rethinkdb with Vuejs on the frontend View L
 
 ### Prerequisites
 
-[ ] npm
-[ ] nodejs
-[ ] rethinkdb
+- [ ] npm  
+- [ ] nodejs  
+- [ ] rethinkdb  
 
 ### How to Use
 
