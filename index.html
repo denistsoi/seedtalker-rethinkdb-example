@@ -1,5 +1,68 @@
 <!DOCTYPE html>
 <html>
+<link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
+<style>
+  body {
+    font-family: 'Raleway', 'Helvetica', sans-serif;
+    font-size: 14px;
+  }
+  ul {
+    padding: 0;
+  }
+  .chat li {
+    list-style: none;
+    margin-bottom: .5em;
+  }
+
+  .message-container {
+    display: flex;
+    background-color: #eee;
+    padding: .25em;
+    position: relative;
+  }
+
+  .message-container .username {
+    width: 10%;
+    position: absolute;
+    top: 5px;
+    font-size: .7em;
+    left: 48px;
+    color: #777;    
+  }
+  
+  .message-container .timestamp {
+    /*width: 200px;*/
+    text-align: right;
+    font-size: .8em;
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    color: #aaa;
+  }
+
+  .message-container .message {
+    margin-left: 4px;
+    width: 30%;
+    line-height: 40px;
+  }
+  
+  .chat input {
+    box-sizing: border-box;
+    border-color: #bbb;
+    border-style: solid;
+    border-width: 2px;
+    height: 48px;
+    width: 100%;
+    padding: .5em;
+    font-size: 1.5em;
+  }
+
+  input:focus {
+    border-color: transparent;
+    outline: #3498db auto 5px;
+  }
+
+</style>
 <body>
 <div id="app">
   <div v-if="state == 'login'">
@@ -9,12 +72,13 @@
     <button @click="login">login</button>
   </div>
 
-  <div v-if="state == 'chat'">
+  <div class="chat" v-if="state == 'chat'">
     <ul>
-      <li v-for="message in messages | orderBy 'timestamp'">
-        <span>{{ message.username }}</span>
-        <span>{{ message.message }}</span> 
-        <span>{{ message.timestamp }}</span>
+      <li class="message-container" v-bind:class="message.username" v-for="message in messages | orderBy 'timestamp'">
+        <img :src="'https://api.adorable.io/avatars/40/' + message.username + '.png'">
+        <span class="username">{{ message.username }}</span>
+        <span class="message">{{ message.message }}</span> 
+        <span class="timestamp">{{ message.timestamp | toTime }}</span>
       </li>
       <li>
         <input v-model="message" @keyup.enter="createMessage">

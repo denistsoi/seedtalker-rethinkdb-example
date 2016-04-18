@@ -10,13 +10,7 @@ var r   = require('rethinkdb');
 
 var conn;
 
-
-app.use(enchilada(__dirname));
-app.use(express.static(__dirname));
-
-var server = http.createServer(app);
-
-shoe(talk(function(t, client) {
+function onConnection(t, client) {
   
   t.rpc('chat', {
     login: function(username, password, cb) {
@@ -48,41 +42,38 @@ shoe(talk(function(t, client) {
       var closed = false;
       r.table('messages').changes({ includeInitial: true }).run(conn, function(err, cursor) {
         if (err) return console.log(err);
+        if (closed) cursor.close();
         cur = cursor;
-        if (closed) {
-          cursor.close();
-        }
+
         cursor.each(function(err, op) {
           if (err) return console.log(err);
           var message = op.new_val;
-
           r.table('users').get(message.user).run(conn, function(err, result) {
             message.username = result.username;
             sub.update([message]);
           });
-
         });
       });
 
       sub.onClose(function() {
-        if (cur) {
-          cur.close();
-        }
+        if (closed) return;
+        if (cur) cur.close();
         closed = true;
       });
     }
-  })
-  
-})).install(server, '/talk');
+  });
+}
 
+app.use(enchilada(__dirname));
+app.use(express.static(__dirname));
 
-// r.use('test');
+var server = http.createServer(app);
+
+shoe(talk(onConnection)).install(server, '/talk');
 
 r.connect({ host: 'localhost', port: 28015 }, function(err, c) {
   conn = c;
-
   c.use('test');
-
   server.listen(5000, function() {
     console.log('Server is listening on port 5000');
   });

@@ -36,6 +36,12 @@ var app = new Vue({
       this.message = '';
     }
   },
+  filters: {
+    toTime: function(dateString) {
+      var d = new Date(dateString);
+      return d.toTimeString();
+    }
+  },
   ready: function() {
     var sub = ps.subscribe('messages');
     var messages = this.messages;
